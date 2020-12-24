@@ -1,0 +1,5 @@
+# 아스키 코드로 변경
+# print(chr(45))	# -
+# print(chr(97))	# a
+# print(ord("A"))	# 65
+# print(ord("B"))	# 66
