@@ -8,7 +8,7 @@ count = 0
 person = 0
 for i in x:
   person += 1
-  if i == person:
+  if i <= person:
     person = 0
     count += 1      
 

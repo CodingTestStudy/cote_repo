@@ -14,4 +14,20 @@ for i in range(len(n) - 1):
     group1 += 1
 
 print(min(group0, group1))
+
+
+# group0 = 0 # 전부 0으로 바꾸는 경우
+# group1 = 0 # 전부 1로 바꾸는 경우
+#
+# if n[0] == '1':
+#   group0 += 1
+# else:
+#   group1 += 1
+
+# for i in range(len(n) - 1):
+#   if n[i] != n[i + 1]:
+#     if n[i + 1] == '1':
+#       group0 += 1
+#     else:
+#       group1 += 1
  

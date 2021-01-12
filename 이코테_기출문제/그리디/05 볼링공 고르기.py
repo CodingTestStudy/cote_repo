@@ -11,3 +11,14 @@ for i in range(len(k) - 1):
       count += 1
     
 print(count)
+
+# array = [0] * 11
+# for i in k:
+#   array[i] += 1
+
+# result = 0
+# for i in range(1, m + 1):
+#   n -= array[i] # 무게가 i인 볼링공의 개수(A가 선택할 수 있는 개수) 제외
+#   result += array[i] * n  # (A 선택) x (B 선택)
+
+# print(result)
