@@ -11,9 +11,12 @@ result = deque(deque() for _ in range(n))
 for _ in range(n):
     input_data.append(int(input()))
 
+# 피보나치 초기화
 fibo = []
 fibo.append(0)
 fibo.append(1)
+
+# 필요로하는 값까지만 피보나치값 생성(최대값을 기준으로)
 i = 1
 while True:
     i += 1
@@ -21,42 +24,23 @@ while True:
     if max(fibo) >= max(input_data):
         break
 
-print(len(fibo))
-print(max(fibo))
 count = -1
 for value in input_data:
     count += 1
+    # 입력한 값이 피보나치 값 그 자체인 경우, 해당 값만 결과 리스트에 남기고 다음 단계로
     if value in fibo:
         result[count].appendleft(value)
         continue
-    start = bisect_left(fibo, value) - 1
-    temp = value # 100
-    for i in range(start): # 89의 index 70
-        value = temp
-        start -= i
-        print("START : ", start)
-        print("삽입 : ", fibo[start])
-        result[count].appendleft(fibo[start])
-        value -= fibo[start]
-        print("현재 value : ", value)
-        x = bisect_left(fibo, value)
-        while sum(result[count]) < temp: # 100
-            if value - fibo[x] >= 0:
-                print("삽입 : ", fibo[x])
-                result[count].appendleft(fibo[x])
-                value -= fibo[x]
-                x = bisect_left(fibo, value)
-                print("sum : ", sum(result[count]))
-            else:
-                print("else 부분")
-                x = bisect_left(fibo, value) - 1
-        if value == 0:
-            break
-        elif value < 0:
-            for _ in range(len(result[count])):
-                result[count].pop()
-    print()
-    print()
+
+    temp = value # 앞으로 value 값을 뺴면서 진행할 것이기 때문에, 임의로 값 저장
+    x = bisect_left(fibo, value) - 1 # 입력값보다 작은 값중에서 가장 가까운 값의 index 찾기
+    while sum(result[count]) < temp: # 100
+        if value - fibo[x] >= 0:
+            result[count].appendleft(fibo[x])
+            value -= fibo[x]
+            x = bisect_left(fibo, value)
+        else:
+            x = bisect_left(fibo, value) - 1
 
 for i in range(n):
     for value in result[i]:
