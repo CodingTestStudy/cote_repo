@@ -1,35 +1,35 @@
-import sys
 N = int(input())
-data = list(map(int, sys.stdin.readline().rstrip().split()))
-operator = list(map(int, input().split()))  # +, -, *, //
-plus = operator[0]
-minus = operator[1]
-multiply = operator[2]
-divide = operator[3]
-temp_op = []
+data = list(map(int, input().split()))
+op = list(map(int, input().split()))  # +, -, *, //
 
-count = 0
-while count != N - 1:
-    if multiply != 0:
-        temp_op.append('*')
-        multiply -= 1
-    elif plus != 0:
-        temp_op.append('+')
-        plus -= 1
-    elif divide != 0:
-        temp_op.append('//')
-        divide -= 1
-    else:
-        temp_op.append('-')
-        minus -= 1
-    count += 1
+max_result = -int(1e9)
+min_result = int(1e9)
 
-temp = data
-for i in range(N - 1):
-    x = temp_op.pop()
-    if x == '*': temp[i + 1] = temp[i] * temp[i + 1]
-    elif x == '+': temp[i + 1] = temp[i] + temp[i + 1]
-    elif x == '//': temp[i + 1] = temp[i] // temp[i + 1]
-    else: temp[i + 1] = temp[i] - temp[i + 1]
+def rotation(index, result):
+    global max_result, min_result
+    if index == N:
+        max_result = max(max_result, result)
+        min_result = min(min_result, result)
+        return
 
-print(temp[N - 1])
+    if op[0] > 0:
+        op[0] -= 1
+        rotation(index + 1, result + data[index])
+        op[0] += 1
+    if op[1] > 0:
+        op[1] -= 1
+        rotation(index + 1, result - data[index])
+        op[1] += 1
+    if op[2] > 0:
+        op[2] -= 1
+        rotation(index + 1, result * data[index])
+        op[2] += 1
+    if op[3] > 0:
+        op[3] -= 1
+        rotation(index + 1, int(result/data[index]))
+        op[3] += 1
+
+
+rotation(1, data[0])
+print(max_result)
+print(min_result)
