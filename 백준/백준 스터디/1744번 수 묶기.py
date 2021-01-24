@@ -1,47 +1,31 @@
-import sys, heapq
-input = sys.stdin.readline
+import heapq
 n = int(input())
-q = []
-data = []
+plus = []   # 0보다 큰 값들을 저장할 리스트
+minus = []  # 0이하의 값들을 저장할 리스트
+for _ in range(n):  # n번 만큼
+    data = int(input()) # 정수를 입력받고
+    # 해당 값의 조건에 맞는 각각 리스트에 삽입
+    if data > 0: heapq.heappush(plus, -data) # 최대 힙
+    else: heapq.heappush(minus, data) # 최소 힙
 
-for _ in range(n):
-    input_data = int(input())
-    heapq.heappush(q, -input_data)
-
-for _ in range(n):
-    data.append(-heapq.heappop(q))
-
-print(data)
-i = 0
-result1 = 0
-
-
-while i < n:
-    if i + 1 < n: # 다음 값이 존재하면서
-        if data[i] == data[i + 1] and data[i + 1] > 0: # 서로 같은 경우(양수에 한해서)
-            result1 += data[i] + data[i + 1]
-        elif data[i + 1] > 1 or data[i] <= 0: # (양, 양), (음, 음), (0, 음)
-            result1 += data[i] * data[i + 1]
-        else: # 그 외의 경우
-            result1 += data[i] + data[i + 1]
-        i += 2
-    else:
-        result1 += data[i]
+sum = 0
+while plus: # plus 리스트가 빌 때까지
+    temp1 = -heapq.heappop(plus) # 현재 plus 리스트에서의 가장 큰 값
+    if not plus: # 이제 plus 리스트가 비어있다면
+        sum += temp1 # 덧셈으로 마무리
         break
+    temp2 = -heapq.heappop(plus) # 현재 plus 리스트에서의 가장 큰 값
+    if temp2 == 1: sum += temp1 + temp2 # 만약 두 번째 값이 1이라면, 덧셈(곱셈하는 것보다 덧셈이 더 큰값을 만듬)
+    else: sum += temp1 * temp2 # 둘다 1보다 크다면 곱셈 (덧셈보다 곱셈이 더 큰값을 만듬)
 
-i = n - 1
-result2 = 0
-while i >= 0:
-    if i - 1 >= 0: # 다음 값이 존재하면서
-        if data[i] == data[i - 1] and data[i] > 0:
-            result2 += data[i] + data[i - 1]
-        elif data[i] > 1 or data[i - 1] <= 0:
-            result2 += data[i] * data[i - 1]
-        else:
-            result2 += data[i] + data[i - 1]
-        i -= 2
-    else:
-        result2 += data[i]
+while minus: # minus 리스트가 빌 때까지
+    temp1 = heapq.heappop(minus) # 현재 minus 리스트에서의 가장 작은 값
+    if not minus: # 이제 minus 리스트가 비어있다면
+        sum += temp1 # 뺄셈으로 마무리 (temp1는 어차피 음수이기 때문에 += 사용)
         break
+    temp2 = heapq.heappop(minus) # 현재 minus 리스트에서의 가장 작은 값
+    sum += temp1 * temp2 # (음수, 음수) or (음수, 0)의 경우, 곱셈의 결과가 가장 큰 값을 만듬
 
-print(max(result1, result2))
+print(sum)
+
+

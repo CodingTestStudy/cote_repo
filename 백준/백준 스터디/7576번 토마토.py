@@ -5,10 +5,10 @@ m, n = map(int, input().split())
 tomato = []
 first_tomato = []  # 초기에 토마토가 존재하는 위치를 담을 리스트
 for i in range(n):
-    input_data = list(map(int, input().split()))
-    tomato.append(input_data)
+    input_data = list(map(int, input().split())) # 데이터 입력 받기
+    tomato.append(input_data) # 데이터 리스트에 담기
     for j in range(m):
-        if input_data[j] == 1:
+        if input_data[j] == 1: # 토마토 위치 발견하면
             first_tomato.append((i, j))  # 초기 입력되는 토마토 위치 리스트에 저장
 
 # 상하좌우
