@@ -12,4 +12,5 @@ while len(data) >= 2:
     data3 = data1 + data2
     heapq.heappush(data, data3)
     # 카드 리스트에 합친 묶음으로 갱신
+    result += data3
 print(result)
