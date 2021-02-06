@@ -1,35 +1,35 @@
 S = input()
-result = 0
-temp = 1
-flag = False
-q = []
-for i in range(len(S)):
+result = 0 # 최종 결과값
+temp = 1 # 괄호열의 구조에 따라 result에 값을 갱신해주는 역할
+flag = False # 괄호열이 올바른지 확인
+q = [] # 순서대로 모든 괄호에 따라 삽입 삭제가 이뤄지는 리스트
+for i in range(len(S)): # 모든 문자에 대해서
     if S[i] == '(':
-        temp *= 2
+        temp *= 2 # (?) 의 괄호열의 값 2를 곱해줌 (나중에 ')'를 만나면 다시 나눠줄 예정)
         q.append('(')
     elif S[i] == '[':
-        temp *= 3
+        temp *= 3 # [?] 의 괄호열의 값 3를 곱해줌 (나중에 ']'를 만나면 다시 나눠줄 예정)
         q.append('[')
     elif S[i] == ')':
-        if len(q) == 0 or q[len(q) - 1] != '(':
-            flag = True
-            break
-        else:
-            if S[i - 1] == '(':
-                result += temp
-            q.pop()
-            temp //= 2
+        if len(q) == 0 or q[len(q) - 1] != '(': # ) 가 필요 이상 존재하는 경우, 또는 리스트에 제거될 대상이 '('가 아닌 '['인 경우 (짝이 안맞는 경우)
+            flag = True # 잘못된 괄호열임을 확인
+            break # 반복문 탈출, 어차피 잘못된 괄호열
+        else: # 그렇지 않고 정상적 괄호열인 경우
+            if S[i - 1] == '(': # 만약 바로 이전에 '(' 인 경우
+                result += temp # 갖고 있는 temp값 덧셈 연산
+            q.pop() # 리스트에서 '(' 삭제
+            temp //= 2 # '(' 삭제 되었으니, temp값도 원상 복구
     elif S[i] == ']':
-        if len(q) == 0 or q[len(q) - 1] != '[':
-            flag = True
-            break
-        else:
-            if S[i - 1] == '[':
-                result += temp
-            q.pop()
-            temp //= 3
+        if len(q) == 0 or q[len(q) - 1] != '[': # ] 가 필요 이상 존재하는 경우, 또는 리스트에 제거될 대상이 '['가 아닌 '('인 경우 (짝이 안맞는 경우)
+            flag = True # 잘못된 괄호열임을 확인
+            break # 반복문 탈출, 어차피 잘못된 괄호열
+        else: # 그렇지 않고 정상적 괄호열인 경우
+            if S[i - 1] == '[': # 만약 바로 이전에 '['인 경우
+                result += temp # 갖고 있는 temp값 덧셈 연산
+            q.pop() # 리스트에서 '[' 삭제
+            temp //= 3 # '['삭제 되었으니, temp값도 원상 복구
 
-if flag or len(q) != 0:
+if flag or len(q) != 0: # 중간에 오른 괄호가 더 많았거나, 왼 괄호가 리스트에 남았을 경우
     print(0)
 else:
     print(result)

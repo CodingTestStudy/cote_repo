@@ -1,5 +1,5 @@
 import sys
-import copy
+# import copy
 N = int(input()) # 주사위 개수 입력
 dice = [] # 주사위 데이터 리스트
 result = [] # 첫 번째 주사위의 bottom 값 (1~6) 에 대한 결과들을 저장하는 리스트
@@ -40,7 +40,8 @@ def delete_top(array, idx, value):
             break
 
 for i in range(6):
-    temp = copy.deepcopy(dice) # 기존의 주사위 복사, 앞의 과정에서 값들이 바뀌기 때문
+    # temp = copy.deepcopy(dice)
+    temp = [data[:] for data in dice] # 기존의 주사위 복사, 앞의 과정에서 값들이 바뀌기 때문
     top = process(temp, 0, i) # 첫 번째 주사위 처리
     for j in range(1, N):
         delete_top(temp, j - 1, top) # 이전의 주사위의 top 값을 0으로 초기화
