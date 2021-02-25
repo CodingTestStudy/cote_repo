@@ -1,7 +1,8 @@
 import sys
-N = int(input())
-data = [sys.stdin.readline().rstrip() for _ in range(N)]
+N = int(sys.stdin.readline().strip())
+data = [sys.stdin.readline().strip() for _ in range(N)]
 
+# 분할 시, 시작좌표와 끝좌표, 그리고 한 변의 길이
 def rotation(x1, y1, x2, y2, n):
     if n == 1: return data[y1][x1] # 분할 결과 결국 하나만 남게 된다면, 그 자체 return
     a = n // 2 # 현재 길이에서 2등분

@@ -1,12 +1,9 @@
 import sys
-sys.setrecursionlimit(10000)
-N = int(input())
-data = []
-for _ in range(N):
-    data.append(list(map(int, sys.stdin.readline().rstrip().split())))
+sys.setrecursionlimit(10000) # 재귀 횟수 조정
+N = int(sys.stdin.readline().strip())
+data = [list(map(int, sys.stdin.readline().strip().split())) for _ in range(N)]
 blue = 0
 white = 0
-
 
 def rotation(a, b, n):
     global blue, white # 전역변수 사용하기 위해 선언
