@@ -11,8 +11,8 @@ public class level1_실패율 {
             for (int stage = 1; stage < N + 1; stage++) {
                 int count = 0;
                 if (people != 0) {
-                    for (int i = 0; i < stages.length; i++) {
-                        if (stages[i] == stage) {
+                    for (int j : stages) {
+                        if (j == stage) {
                             count += 1;
                         }
                     }
