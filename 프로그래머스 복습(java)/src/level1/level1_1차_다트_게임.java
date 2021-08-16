@@ -23,7 +23,6 @@ public class level1_1차_다트_게임 {
                     if (dartResult.charAt(i + 1) == '0') {
                         answer[index] = 10;
                         i++;
-                        continue;
                     } else {
                         answer[index] = Character.getNumericValue(c);
                     }
