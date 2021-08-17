@@ -1,7 +1,5 @@
 package level2;
 
-import java.math.BigInteger;
-
 public class level2_N개의_최소공배수 {
     static class Solution {
         int gcd(int x, int y) {
