@@ -38,7 +38,7 @@ public class level2_JadenCase_문자열_만들기 {
                 answer += flag ? ss.toUpperCase() : ss;
                 flag = ss.equals(" ") ? true : false;
             }
-    
+
             return answer;
              */
         }
