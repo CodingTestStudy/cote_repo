@@ -1,0 +1,16 @@
+package javastudy.이코테.다이나믹프로그래밍;
+
+public class 피보나치_보텀업 {
+
+    public static long[] d = new long[100];
+
+    public static void main(String[] args) {
+        d[1] = 1;
+        d[2] = 1;
+        int n = 50;
+        for (int i = 3; i <= n; i++) {
+            d[i] = d[i - 1] + d[i - 2];
+        }
+        System.out.println(d[n]);
+    }
+}
