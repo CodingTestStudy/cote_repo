@@ -1,43 +1,42 @@
-# heapq(우선순위큐)을 활용한 다익스트라
-
-import heapq
+from collections import deque
 
 
 def solution(board):
     length = len(board)
-    price = [[[1e9] * 4 for _ in range(length)] for _ in range(length)]
+    dp = [[[1e9] * 4 for _ in range(length)] for _ in range(length)]
     dr = [-1, 1, 0, 0]
     dc = [0, 0, -1, 1]
 
-    # (p, r, c, d)
-    q = [(0, 0, 0, -1)]
-    price[0][0] = [0, 0, 0, 0]
+    # p, r, c, d
+    q = deque([(0, 0, 0, -1)])
+
+    dp[0][0] = [0, 0, 0, 0]
     while q:
-        # price 가 작은 순으로 pop()
-        p, r, c, d = heapq.heappop(q)
+        p, r, c, d = q.popleft()
 
-        # 처음이 아니고 이전에 방문한 적 있다면, 최소값으로 지정되어있기 때문에 다루지 않음
-        if d != -1 and price[r][c][d] != p:
+        # 최소값 갱신 과정
+        if dp[r][c][d] < p:
             continue
-
-        # 도착했다면 가장 작은 값이 도달했기 때문에 바로 return
-        if r == length - 1 and c == length - 1:
-            return p
+        else:
+            dp[r][c][d] = p
 
         for i in range(4):
             nr, nc = r + dr[i], c + dc[i]
 
             # 범위 이탈 or 벽
-            if nr < 0 or nr >= length or nc < 0 or nc >= length:
-                continue
-            # 벽
-            if board[nr][nc] == 1:
+            if nr < 0 or nr >= length or nc < 0 or nc >= length or board[nr][nc] == 1:
                 continue
 
-            temp = 100 if d == -1 or d == i else 600
-            if price[nr][nc][i] > p + temp:
-                price[nr][nc][i] = p + temp
-                heapq.heappush(q, (temp + p, nr, nc, i))
+            price = 100 if d == -1 or d == i else 600
+            price += p
+
+            # 해당 값이 최소값이 아니라면, 갱신 X
+            if dp[nr][nc][i] < price:
+                continue
+            dp[nr][nc][i] = price
+            q.append((price, nr, nc, i))
+
+    return min(dp[length - 1][length - 1])
 
 
 print(solution([[0, 0, 0], [0, 0, 0], [0, 0, 0]]))
@@ -53,6 +52,47 @@ print(solution([[0, 0, 0, 0, 0],
                 [0, 0, 1, 0, 0],
                 [1, 0, 0, 0, 1],
                 [0, 1, 1, 0, 0]]))
+# # heapq(우선순위큐)을 활용한 다익스트라
+#
+# import heapq
+#
+#
+# def solution(board):
+#     length = len(board)
+#     price = [[[1e9] * 4 for _ in range(length)] for _ in range(length)]
+#     dr = [-1, 1, 0, 0]
+#     dc = [0, 0, -1, 1]
+#
+#     # (p, r, c, d)
+#     q = [(0, 0, 0, -1)]
+#     price[0][0] = [0, 0, 0, 0]
+#     while q:
+#         # price 가 작은 순으로 pop()
+#         p, r, c, d = heapq.heappop(q)
+#
+#         # 처음이 아니고 이전에 방문한 적 있다면, 최소값으로 지정되어있기 때문에 다루지 않음
+#         if d != -1 and price[r][c][d] != p:
+#             continue
+#
+#         # 도착했다면 가장 작은 값이 도달했기 때문에 바로 return
+#         if r == length - 1 and c == length - 1:
+#             return p
+#
+#         for i in range(4):
+#             nr, nc = r + dr[i], c + dc[i]
+#
+#             # 범위 이탈 or 벽
+#             if nr < 0 or nr >= length or nc < 0 or nc >= length:
+#                 continue
+#             # 벽
+#             if board[nr][nc] == 1:
+#                 continue
+#
+#             temp = 100 if d == -1 or d == i else 600
+#             if price[nr][nc][i] > p + temp:
+#                 price[nr][nc][i] = p + temp
+#                 heapq.heappush(q, (temp + p, nr, nc, i))
+
 
 # 오답 코드(추가된 테스트케이스 25번 오답)
 #
