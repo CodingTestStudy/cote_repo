@@ -1,5 +1,5 @@
 import sys
-from collections import deque
+import heapq
 
 input = sys.stdin.readline
 n, m = map(int, input().split())
@@ -11,21 +11,24 @@ for _ in range(n - 1):
     graph[end].append((dist, start))
 
 
-def bfs(start, end):
-    q = deque()
-    q.append((start, 0))
+def dijkstra(start, end):
+    distance = [1e9] * (n + 1)
     visited = [False] * (n + 1)
-    visited[start] = True
+    distance[start] = 0
+    q = [[0, start]]
     while q:
-        target, distance = q.popleft()
-        if target == end:
-            return distance
-        for d, t in graph[target]:
-            if not visited[t]:
-                visited[t] = True
-                q.append((t, distance + d))
+        d, s = heapq.heappop(q)
+        # 이전에 방문했거나 현재 거리가 이미 저장된 거리보다 크다면 생략
+        if visited[s] or d > distance[s]:
+            continue
+        for dist, target in graph[s]:
+            # 이전 거리보다 적다면 갱신
+            if distance[target] > d + dist:
+                distance[target] = d + dist
+                heapq.heappush(q, (distance[target], target))
+    return distance[end]
 
 
-for i in range(m):
+for _ in range(m):
     start, end = map(int, input().split())
-    print(bfs(start, end))
+    print(dijkstra(start, end))
