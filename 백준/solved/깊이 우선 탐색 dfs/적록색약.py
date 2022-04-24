@@ -1,5 +1,5 @@
 import sys
-from copy import deepcopy
+
 sys.setrecursionlimit(100000)
 
 input = sys.stdin.readline
@@ -10,40 +10,40 @@ dc = [0, 0, -1, 1]
 for _ in range(n):
     grid.append(list(input().strip()))
 
+three_cnt, two_cnt = 0, 0
 
-def dfs(r, c, color, temp):
-    # 범위 이탈
-    if r < 0 or c < 0 or r >= n or c >= n:
-        return False
-    if temp[r][c] in color:
-        temp[r][c] = 'X'
-        for i in range(4):
-            nr, nc = r + dr[i], c + dc[i]
-            dfs(nr, nc, color, temp)
-        return True
-    return False
+visited = [[False] * n for _ in range(n)]
 
 
-blue_cnt, green_cnt, red_cnt, green_red_cnt = 0, 0, 0, 0
-grid1, grid2, grid3, grid4 = deepcopy(grid), deepcopy(grid), deepcopy(grid), deepcopy(grid)
+def dfs(r, c):
+    visited[r][c] = True
+    color = grid[r][c]
+    for i in range(4):
+        nr, nc = r + dr[i], c + dc[i]
+        # 범위 이탈
+        if nr < 0 or nc < 0 or nr >= n or nc >= n:
+            continue
+        if not visited[nr][nc] and grid[nr][nc] == color:
+            dfs(nr, nc)
 
-for i in range(n):
-    for j in range(n):
-        if dfs(i, j, 'B', grid1):
-            blue_cnt += 1
-for i in range(n):
-    for j in range(n):
-        if dfs(i, j, 'G', grid2):
-            green_cnt += 1
-for i in range(n):
-    for j in range(n):
-        if dfs(i, j, 'R', grid3):
-            red_cnt += 1
-for i in range(n):
-    for j in range(n):
-        if dfs(i, j, 'GR', grid4):
-            green_red_cnt += 1
 
-print(blue_cnt + green_cnt + red_cnt, end=' ')
-print(blue_cnt + green_red_cnt)
+for r in range(n):
+    for c in range(n):
+        if not visited[r][c]:
+            dfs(r, c)
+            three_cnt += 1
 
+for r in range(n):
+    for c in range(n):
+        if grid[r][c] == 'G':
+            grid[r][c] = 'R'
+
+visited = [[False] * n for _ in range(n)]
+
+for r in range(n):
+    for c in range(n):
+        if not visited[r][c]:
+            dfs(r, c)
+            two_cnt += 1
+
+print(three_cnt, two_cnt)
