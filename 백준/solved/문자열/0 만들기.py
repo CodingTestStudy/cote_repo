@@ -1,46 +1,41 @@
 import sys
-from collections import deque
 from copy import deepcopy
 
 input = sys.stdin.readline
 T = int(input())
-calc = ['+', '-', ' ']
-while T:
-    result = []
-    result2 = []
-    answer = []
 
+
+def make_op(temp, cnt):
+    if cnt == N - 1:
+        op_list.append(deepcopy(temp))
+        return
+    temp.append(' ')
+    make_op(temp, cnt + 1)
+    temp.pop()
+
+    temp.append('+')
+    make_op(temp, cnt + 1)
+    temp.pop()
+
+    temp.append('-')
+    make_op(temp, cnt + 1)
+    temp.pop()
+
+
+while T:
     T -= 1
     N = int(input())
+    op_list = []
+    make_op([], 0)
+
     nums = [i for i in range(1, N + 1)]
-    q = deque()
-    q.append((["1"], 1))
-    while q:
-        temp, cnt = q.popleft()
 
-        if cnt == N:
-            result.append(temp)
-            continue
-        for cal in calc:
-            test = []
-            test.extend(temp)
-            test.append(cal)
-            test.append(str(cnt + 1))
-            q.append((test, cnt + 1))
+    for op in op_list:
+        test = ''
+        for i in range(N - 1):
+            test += str(nums[i]) + op[i]
+        test += str(N)
 
-    result2 = deepcopy(result)
-
-    for idx, res in enumerate(result):
-        for i in range(len(res)):
-            if res[i] == ' ':
-                res[i] = res[i - 1] + res[i + 1]
-                res[i - 1], res[i + 1] = '', ''
-        data = eval(''.join(res))
-
-        if data == 0:
-            answer.append(result2[idx])
-
-    answer.sort()
-    for ans in answer:
-        print(''.join(ans))
+        if eval(test.replace(' ', '')) == 0:
+            print(test)
     print()
