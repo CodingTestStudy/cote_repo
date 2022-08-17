@@ -37,7 +37,7 @@ public class BOJ_1074 {
 			}
 		}
 
-		int next = (int) Math.pow(2, len);
+		int next = (int) Math.pow(len, 2);
 
 		if (checkRange(r, c, r + len, c + len)) {
 			find(r, c, len / 2, cnt);
@@ -53,5 +53,4 @@ public class BOJ_1074 {
 	static boolean checkRange(int r1, int c1, int r2, int c2) {
 		return (R >= r1) && (R < r2) && (C >= c1) && (C < c2);
 	}
-
 }
