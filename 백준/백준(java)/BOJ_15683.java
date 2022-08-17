@@ -47,11 +47,11 @@ public class BOJ_15683 {
 			}
 		}
 
-		bfs(0, map);
+		dfs(0, map);
 		System.out.println(answer);
 	}
 
-	static void bfs(int start, int[][] temp) {
+	static void dfs(int start, int[][] temp) {
 		if (start == pointList.size()) {
 			int value = calc(temp);
 			answer = Math.min(answer, value);
@@ -76,7 +76,7 @@ public class BOJ_15683 {
 					nc += dc[i];
 
 				}
-				bfs(start + 1, newTemp);
+				dfs(start + 1, newTemp);
 			}
 			break;
 		case 2:
@@ -90,7 +90,7 @@ public class BOJ_15683 {
 					nc += dc[i];
 				}
 			}
-			bfs(start + 1, newTemp);
+			dfs(start + 1, newTemp);
 			newTemp = deepcopy(temp);
 			for (int i = 2; i < 4; i++) {
 				int nr = r + dr[i];
@@ -101,7 +101,7 @@ public class BOJ_15683 {
 					nc += dc[i];
 				}
 			}
-			bfs(start + 1, newTemp);
+			dfs(start + 1, newTemp);
 			break;
 		case 3:
 			int[][] test = { { 0, 3 }, { 3, 1 }, { 1, 2 }, { 2, 0 } };
@@ -117,7 +117,7 @@ public class BOJ_15683 {
 						nc += dc[i];
 					}
 				}
-				bfs(start + 1, newTemp);
+				dfs(start + 1, newTemp);
 			}
 
 			break;
@@ -136,7 +136,7 @@ public class BOJ_15683 {
 						nc += dc[j];
 					}
 				}
-				bfs(start + 1, newTemp);
+				dfs(start + 1, newTemp);
 			}
 			break;
 		case 5:
@@ -150,7 +150,7 @@ public class BOJ_15683 {
 					nc += dc[i];
 				}
 			}
-			bfs(start + 1, newTemp);
+			dfs(start + 1, newTemp);
 			break;
 
 		}
