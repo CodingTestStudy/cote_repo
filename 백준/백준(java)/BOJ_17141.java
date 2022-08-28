@@ -68,14 +68,13 @@ public class BOJ_17141 {
 	static void bfs() {
 		Queue<Point> q = new ArrayDeque<>();
 		boolean[][] visited = new boolean[N][N];
-		int zero = zeroCnt;
+		int zero = zeroCnt + virusList.size() - M;
 		int[][] temp = deepcopy(map);
 		for (int i = 0; i < virusList.size(); i++) {
 			Point p = virusList.get(i);
 			if (selected[i]) {
 				q.add(p);
 				visited[p.r][p.c] = true;
-				temp[p.r][p.c] = 0;
 			}
 			temp[p.r][p.c] = 0;
 		}
@@ -97,20 +96,13 @@ public class BOJ_17141 {
 			}
 		}
 
-		if (zero <= 0) {
-			print(temp);
-			System.out.println(result);
-			System.out.println();
-			answer = Math.min(answer, result);
+		// 바이러스가 존재하지 않거나, 바이러스 첫 배치 후, 추가로 퍼질 공간이 없는 경우(큐를 돌지 않은 경우)
+		if (result == -1) {
+			answer = Math.min(answer, 0);
 		}
-	}
 
-	static void print(int[][] temp) {
-		for (int r = 0; r < N; r++) {
-			for (int c = 0; c < N; c++) {
-				System.out.print(temp[r][c] + " ");
-			}
-			System.out.println();
+		else if (zero <= 0) {
+			answer = Math.min(answer, result);
 		}
 	}
 
