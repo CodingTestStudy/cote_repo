@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -53,59 +52,41 @@ public class BOJ_2310_최규림 {
 				}
 
 			}
-			visited[1] = true;
+
 			dfs(1, 0);
+
 			sb.append(flag ? "YES" : "NO").append('\n');
 		}
 		System.out.println(sb.toString());
 	}
 
 	static void dfs(int idx, int price) {
-		if (flag)
-			return;
 		Room target = rooms[idx];
 
-		if (idx == n) {
-			if (target.alphabet == 'T' && target.price > price) {
+		// 레프리콘
+		if (target.alphabet == 'L') {
+			price = Math.max(price, target.price);
+		}
+		// 트롤
+		else if (target.alphabet == 'T') {
+			price -= target.price;
+			if (price < 0) {
 				return;
 			}
+		}
+
+		if (idx == n) {
 			flag = true;
 			return;
 		}
 
-		// 문
-		switch (target.alphabet) {
-		case 'E':
-			for (int nxt : target.list) {
-				if (visited[nxt])
-					continue;
-				visited[nxt] = true;
-				dfs(nxt, price);
-				visited[nxt] = false;
+		visited[idx] = true;
+		for (int nxt : target.list) {
+			if (visited[nxt]) {
+				continue;
 			}
-			break;
-		case 'L':
-			for (int nxt : target.list) {
-				if (visited[nxt])
-					continue;
-				visited[nxt] = true;
-				dfs(nxt, Math.max(target.price, price));
-				visited[nxt] = false;
-			}
-			break;
-		case 'T':
-			for (int nxt : target.list) {
-				if (visited[nxt])
-					continue;
-				int p = price - target.price;
-				if (p < 0) {
-					return;
-				}
-				visited[nxt] = true;
-				dfs(nxt, p);
-				visited[nxt] = false;
-			}
-			break;
+			dfs(nxt, price);
 		}
+		visited[idx] = false;
 	}
 }
