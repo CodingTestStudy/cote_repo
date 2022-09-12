@@ -3,26 +3,22 @@ package week7;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.DecimalFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 // 승부 예측
-public class BOJ_15997_최규림 {
-
-	static Map<String, Integer> map = new HashMap<String, Integer>();
+public class BOJ_15997 {
 
 	static class Team implements Comparable<Team> {
+		int idx, score;
 		String name;
-		int score, idx;
+		double prob;
 
-		Team(int idx, String name, int score) {
+		Team(int idx, int score, String name) {
 			this.idx = idx;
-			this.name = name;
 			this.score = score;
+			this.name = name;
 		}
 
 		@Override
@@ -31,8 +27,22 @@ public class BOJ_15997_최규림 {
 		}
 	}
 
+	static class Game {
+		String team1, team2;
+		double w, d, l;
+
+		Game(String t1, String t2, double w, double d, double l) {
+			this.team1 = t1;
+			this.team2 = t2;
+			this.w = w;
+			this.d = d;
+			this.l = l;
+		}
+	}
+
 	static Team[] teams = new Team[4];
-	static double[] answers = new double[4];
+	static Game[] games = new Game[6];
+	static HashMap<String, Integer> map = new HashMap<>();
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -40,111 +50,109 @@ public class BOJ_15997_최규림 {
 
 		for (int i = 0; i < 4; i++) {
 			String name = st.nextToken();
-			teams[i] = new Team(i, name, 0);
-			map.put(name, 0);
+			teams[i] = new Team(i, 0, name);
+			map.put(name, i);
 		}
 
 		for (int i = 0; i < 6; i++) {
 			st = new StringTokenizer(br.readLine(), " ");
 			String t1 = st.nextToken();
 			String t2 = st.nextToken();
-
-			float w = Float.parseFloat(st.nextToken());
-			float d = Float.parseFloat(st.nextToken());
-			float l = Float.parseFloat(st.nextToken());
-
-			float max = Math.max(w, Math.max(d, l));
-
-			// 비기는 경우
-			if ((max == w && max == l) || max == d) {
-				map.put(t1, map.get(t1) + 1);
-				map.put(t2, map.get(t2) + 1);
-			}
-			// t1 이 t2를 이기는 경우
-			else if (max == w) {
-				map.put(t1, map.get(t1) + 3);
-			}
-			// t2가 t1을 이기는 경우
-			else {
-				map.put(t2, map.get(t2) + 3);
-			}
+			double w = Double.parseDouble(st.nextToken());
+			double d = Double.parseDouble(st.nextToken());
+			double l = Double.parseDouble(st.nextToken());
+			games[i] = new Game(t1, t2, w, d, l);
 		}
 
-		for (String name : map.keySet()) {
-			for (int i = 0; i < 4; i++) {
-				if (name.equals(teams[i].name)) {
-					teams[i].score = map.get(name);
-				}
-			}
-		}
-
-		Arrays.sort(teams);
-		int[] cnts = { 1, 0 };
-		int idx = 0;
-		int temp = teams[0].score;
-
-		for (int i = 1; i < 4; i++) {
-			if (temp != teams[i].score) {
-				if (idx == 1) {
-					break;
-				}
-				idx++;
-				temp = teams[i].score;
-			}
-
-			cnts[idx]++;
-		}
-
-		// 전부 승점 같은 경우
-		if (cnts[0] == 4) {
-			System.out.printf("%.10f", 0.25);
-			System.out.printf("%.10f", 0.25);
-			System.out.printf("%.10f", 0.25);
-			System.out.printf("%.10f", 0.25);
-		}
-		// 1등이 3팀인 경우
-		else if (cnts[0] == 3) {
-			int maxScore = teams[0].score;
-			for (int i = 0; i < 4; i++) {
-				if (teams[i].score == maxScore) {
-					answers[teams[i].idx] = makePercentage(2 / 3);
-				} else {
-					answers[teams[i].idx] = makePercentage(0);
-				}
-			}
-		}
-		// 1등이 2팀인 경우
-		else if (cnts[0] == 2) {
-			int maxScore = teams[0].score;
-			for (int i = 0; i < 4; i++) {
-				if (teams[i].score == maxScore) {
-					answers[teams[i].idx] = makePercentage(1);
-				} else {
-					answers[teams[i].idx] = makePercentage(0);
-				}
-			}
-		}
-		// 1등이 1팀이 경우
-		else if (cnts[0] == 1) {			
-			answers[teams[0].idx] = makePercentage(1);
-			int maxScore = teams[1].score;
-			int cnt = cnts[1];
-			for (int i = 1; i < 4; i++) {
-				if (teams[i].score == maxScore) {
-					answers[teams[i].idx] = 1/ makePercentage(cnt);
-				} else {
-					answers[teams[i].idx] = makePercentage(0);
-				}
-			}
-		}
-
-		for (double ans : answers) {
-			System.out.println(ans);
+		Team[] answer = teams.clone();
+		dfs(0, 1);
+		for (int i = 0; i < 4; i++) {
+			Team t = answer[i];
+			System.out.println(teams[t.idx].prob);
 		}
 	}
 
-	static double makePercentage(double d) {
-		double x = Math.pow(10, 6);
-		return Math.round(d * x) / x;
+	static void dfs(int idx, double prob) {
+		if (idx == 6) {			
+//			System.out.println("경기 종료");
+			// 점수별로 정렬 -> 승점 순위
+			Team[] answer = teams.clone();
+			
+			Arrays.sort(answer);
+			Team t1 = answer[0];
+			Team t2 = answer[1];
+			Team t3 = answer[2];
+			Team t4 = answer[3];
+//			System.out.println(t1.score);
+//			System.out.println(t2.score);
+//			System.out.println(t3.score);
+//			System.out.println(t4.score);
+//			System.out.println(prob);
+
+			// 4팀 전부 동률
+			if (t1.score == t2.score && t2.score == t3.score && t3.score == t4.score) {
+//				System.out.println("4team");
+				t1.prob += prob / 2;
+				t2.prob += prob / 2;
+				t3.prob += prob / 2;
+				t4.prob += prob / 2;
+			}
+			// 1등 3팀
+			else if (t1.score == t2.score && t2.score == t3.score) {
+				t1.prob += prob * 2 / 3;
+				t2.prob += prob * 2 / 3;
+				t3.prob += prob * 2 / 3;
+			}
+			// 1등 2팀
+			else if (t1.score == t2.score) {
+				t1.prob += prob;
+				t2.prob += prob;
+			}
+			// 1등 1팀 -> 2등 3팀
+			else if (t2.score == t3.score && t3.score == t4.score) {
+//				System.out.println("here");
+				t1.prob += prob;
+				t2.prob += prob / 3;
+				t3.prob += prob / 3;
+				t4.prob += prob / 3;
+			}
+			// 1등 1팀 -> 2등 2팀
+			else if (t2.score == t3.score) {
+				t1.prob += prob;
+				t2.prob += prob / 2;
+				t3.prob += prob / 2;
+			}
+			// 1등 1팀 -> 2등 1팀
+			else {
+				t1.prob += prob;
+				t2.prob += prob;
+			}
+
+			return;
+		}
+
+		// idx 번째 경기 데이터
+		// t1 vs t2
+		Game game = games[idx];
+		Team t1 = teams[map.get(game.team1)];
+		Team t2 = teams[map.get(game.team2)];
+
+		// t1 이긴 경우
+//		System.out.println("t1 win");
+		t1.score += 3;
+		dfs(idx + 1, prob * game.w);
+		t1.score -= 3;
+		// t1 비긴 경우
+//		System.out.println("draw");
+		t1.score += 1;
+		t2.score += 1;
+		dfs(idx + 1, prob * game.d);
+		t1.score -= 1;
+		t2.score -= 1;
+		// t1 진 경우
+//		System.out.println("t1 lose");
+		t2.score += 3;		
+		dfs(idx + 1, prob * game.l);
+		t2.score -= 3;
 	}
 }
