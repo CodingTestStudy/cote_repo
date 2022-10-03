@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+// 병사 배치하기
 public class BOJ_18353 {
 
-	static int N;
+	static int N, answer;
 	static int[] arr, dp;
 
 	public static void main(String[] args) throws IOException {
@@ -21,20 +22,28 @@ public class BOJ_18353 {
 			arr[i] = Integer.parseInt(st.nextToken());
 		}
 
-		if (N == 1) {
-			System.out.println(0);
-		} else {
-			for (int i = 1; i < N; i++) {
-				if (arr[i] >= arr[i - 1]) {
-					dp[i] = dp[i - 1] + 1;
-				} else {
-					dp[i] = dp[i - 1];
+		calc();
+		System.out.println(N - answer - 1);
+
+//		print();
+	}
+
+	static void calc() {
+		for (int i = 1; i < N; i++) {
+			for (int j = 0; j < i; j++) {
+				// 내림차순인 경우
+				if (arr[i] < arr[j]) {
+					dp[i] = Math.max(dp[i], dp[j] + 1);
+					answer = Math.max(answer, dp[i]);
 				}
-
 			}
-
-			System.out.println(dp[N - 1]);
 		}
+	}
 
+	static void print() {
+		for (int i = 0; i < N; i++) {
+			System.out.print(dp[i] + " ");
+		}
+		System.out.println();
 	}
 }
