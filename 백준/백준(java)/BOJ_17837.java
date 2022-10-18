@@ -15,6 +15,7 @@ public class BOJ_17837 {
 
 	static int[][] map;
 	static Deque<Integer>[][] qMap;
+	static Deque<Integer> q, remainQ, moveQ;
 
 	static class Point {
 		int r, c, d;
@@ -35,14 +36,15 @@ public class BOJ_17837 {
 		N = Integer.parseInt(st.nextToken());
 		K = Integer.parseInt(st.nextToken());
 
-		map = new int[N][N];
+		map = new int[N + 1][N + 1];
 		horses = new Point[K];
-		qMap = new ArrayDeque[N][N];
+		qMap = new ArrayDeque[N + 1][N + 1];
 
-		for (int r = 0; r < N; r++) {
+		for (int r = 1; r <= N; r++) {
 			st = new StringTokenizer(br.readLine(), " ");
-			for (int c = 0; c < N; c++) {
+			for (int c = 1; c <= N; c++) {
 				map[r][c] = Integer.parseInt(st.nextToken());
+				qMap[r][c] = new ArrayDeque<>();
 			}
 		}
 
@@ -55,10 +57,11 @@ public class BOJ_17837 {
 			qMap[r][c].add(i);
 		}
 
-		for (int x = 0; x < 10001; x++) {
+		for (int x = 0; x < 1001; x++) {
 			ans++;
 			for (int i = 0; i < K; i++) {
 				move(i);
+
 				if (isSuccess(horses[i].r, horses[i].c)) {
 					System.out.println(ans);
 					return;
@@ -71,13 +74,13 @@ public class BOJ_17837 {
 	static void move(int idx) {
 		int r = horses[idx].r;
 		int c = horses[idx].c;
-		Deque<Integer> q = qMap[r][c];
-		Deque<Integer> remainQ = new ArrayDeque<>();
-		Deque<Integer> moveQ = new ArrayDeque<>();
+		q = qMap[r][c];
+		remainQ = new ArrayDeque<>();
+		moveQ = new ArrayDeque<>();
 
 		boolean flag = false;
 		while (!q.isEmpty()) {
-			int target = q.poll();
+			int target = q.pollFirst();
 			if (target == idx) {
 				flag = true;
 			}
@@ -90,39 +93,90 @@ public class BOJ_17837 {
 		}
 		qMap[r][c] = remainQ;
 
-		int nr = r + horses[idx].d;
-		int nc = c + horses[idx].d;
+		int nr = r + dr[horses[idx].d];
+		int nc = c + dc[horses[idx].d];
 
 		// blue
 		if (!checkRange(nr, nc) || map[nr][nc] == 2) {
+			horses[idx].d = changeDir(horses[idx].d);
+			nr = r + dr[horses[idx].d];
+			nc = c + dc[horses[idx].d];
+
+			BLUE(r, c, nr, nc);
 
 		}
 		// red
 		else if (map[nr][nc] == 1) {
-			while (!moveQ.isEmpty()) {
-				int target = moveQ.pollLast();
-				qMap[nr][nc].add(target);
-			}
+			RED(nr, nc);
 		}
 		// white
 		else {
-			while (!moveQ.isEmpty()) {
-				int target = moveQ.pollFirst();
-				qMap[nr][nc].add(target);
-			}
+			WHITE(nr, nc);
 		}
 
 	}
 
+	static void WHITE(int nr, int nc) {
+		while (!moveQ.isEmpty()) {
+			int target = moveQ.pollFirst();
+			qMap[nr][nc].add(target);
+			horses[target].r = nr;
+			horses[target].c = nc;
+		}
+	}
+
+	static void RED(int nr, int nc) {
+		while (!moveQ.isEmpty()) {
+			int target = moveQ.pollLast();
+			qMap[nr][nc].add(target);
+			horses[target].r = nr;
+			horses[target].c = nc;
+		}
+	}
+
+	static void BLUE(int r, int c, int nr, int nc) {
+		// blue
+		if (!checkRange(nr, nc) || map[nr][nc] == 2) {
+			while (!moveQ.isEmpty()) {
+				int target = moveQ.pollFirst();
+				qMap[r][c].add(target);
+			}
+		} else {
+			// red
+			if (map[nr][nc] == 1) {
+				RED(nr, nc);
+
+			}
+			// white
+			else {
+				WHITE(nr, nc);
+			}
+
+		}
+	}
+
 	static boolean isSuccess(int r, int c) {
-		if (qMap[r][c].size() == 4) {
+		if (qMap[r][c].size() >= 4) {
 			return true;
 		}
 		return false;
 	}
 
 	static boolean checkRange(int r, int c) {
-		return r >= 0 && r < N && c >= 0 && c < N;
+		return r >= 1 && r <= N && c >= 1 && c <= N;
 	}
 
+	static int changeDir(int d) {
+		switch (d) {
+		case 1:
+			return 2;
+		case 2:
+			return 1;
+		case 3:
+			return 4;
+		case 4:
+			return 3;
+		}
+		return -1;
+	}
 }
